@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+
+import LoginForm from './components/LoginForm';
+import Blogs from './components/Blogs';
+import Notifications from './components/Notifications';
+
+import blogsService from './services/blogs';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState({
+    error: false,
+    message: null,
+  });
+
+  useEffect(() => {
+    const loggedinUser = window.localStorage.getItem('bloglistAppLoggedinUser');
+    if (loggedinUser) {
+      const userObj = JSON.parse(loggedinUser);
+      setUser(userObj);
+      blogsService.setToken(userObj.token);
+    }
+  }, []);
+
+  function renderBlogs() {
+    return (
+      <Blogs user={user} setUser={setUser} setNotification={setNotification} />
+    );
+  }
+
+  function renderLoginForm() {
+    return <LoginForm setUser={setUser} setNotification={setNotification} />;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Notifications
+        error={notification.error}
+        message={notification.message}
+      />
+      <h1>Bloglist App</h1>
+      {user ? renderBlogs() : renderLoginForm()}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 
 import IndividualBlog from './IndividualBlog';
 import BlogForm from './BlogForm';
@@ -55,5 +56,15 @@ function Blogs({ user, setUser, setNotification }) {
     </div>
   );
 }
+
+Blogs.propTypes = {
+  user: PropTypes.shape({
+    username: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    token: PropTypes.string.isRequired,
+  }).isRequired,
+  setUser: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired,
+};
 
 export default Blogs;

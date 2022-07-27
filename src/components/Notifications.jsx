@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 function Notifications({ error, message }) {
   const notificationStyle = {
     color: error ? 'red' : 'green',
@@ -14,5 +16,14 @@ function Notifications({ error, message }) {
 
   return null;
 }
+
+Notifications.propTypes = {
+  error: PropTypes.bool.isRequired,
+  message: PropTypes.string,
+};
+
+Notifications.defaultProps = {
+  message: null,
+};
 
 export default Notifications;

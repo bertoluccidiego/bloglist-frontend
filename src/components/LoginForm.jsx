@@ -29,7 +29,6 @@ function LoginForm({ setUser, setNotification }) {
         });
       }, 5000);
     } catch (error) {
-      console.log();
       setNotification({
         error: true,
         message: error.response.data.error,

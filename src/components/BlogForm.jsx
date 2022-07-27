@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import blogsService from '../services/blogs';
 
-function BlogForm({ blogs, setBlogs, setNotification }) {
+function BlogForm({ blogs, setBlogs, setNotification, blogFormRef }) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -30,6 +30,7 @@ function BlogForm({ blogs, setBlogs, setNotification }) {
       setTitle('');
       setAuthor('');
       setUrl('');
+      blogFormRef.current.toggleVisibility();
     } catch (error) {
       setNotification({
         error: true,

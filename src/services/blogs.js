@@ -24,10 +24,33 @@ async function create(blogObj) {
   return response.data;
 }
 
+async function update(blogObj, id) {
+  const config = {
+    headers: {
+      Authorization: userToken,
+    },
+  };
+
+  const response = await axios.put(`${baseUrl}/${id}`, blogObj, config);
+  return response.data;
+}
+
+async function remove(id) {
+  const config = {
+    headers: {
+      Authorization: userToken,
+    },
+  };
+
+  await axios.delete(`${baseUrl}/${id}`, config);
+}
+
 const exportObj = {
   setToken,
   getAll,
   create,
+  update,
+  remove,
 };
 
 export default exportObj;

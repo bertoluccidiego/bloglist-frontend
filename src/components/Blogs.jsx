@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import IndividualBlog from './IndividualBlog';
 import BlogForm from './BlogForm';
+import Togglable from './Togglable';
 
 import blogsService from '../services/blogs';
 
 function Blogs({ user, setUser, setNotification }) {
   const [blogs, setBlogs] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogsService.getAll().then((result) => setBlogs(result));
@@ -17,6 +20,8 @@ function Blogs({ user, setUser, setNotification }) {
     setUser(null);
   }
 
+  const sortedBlogs = blogs ? blogs.sort((a, b) => b.likes - a.likes) : null;
+
   return (
     <div>
       <h2>Blogs</h2>
@@ -26,15 +31,26 @@ function Blogs({ user, setUser, setNotification }) {
           logout
         </button>
       </div>
-      <BlogForm
-        blogs={blogs}
-        setBlogs={setBlogs}
-        setNotification={setNotification}
-      />
+      <Togglable buttonLabel="new note" ref={blogFormRef}>
+        <BlogForm
+          blogs={blogs}
+          setBlogs={setBlogs}
+          setNotification={setNotification}
+          blogFormRef={blogFormRef}
+        />
+      </Togglable>
       <ul>
-        {!blogs
+        {!sortedBlogs
           ? null
-          : blogs.map((blog) => <IndividualBlog key={blog.id} blog={blog} />)}
+          : sortedBlogs.map((blog) => (
+              <IndividualBlog
+                key={blog.id}
+                blog={blog}
+                blogs={blogs}
+                setBlogs={setBlogs}
+                setNotification={setNotification}
+              />
+            ))}
       </ul>
     </div>
   );

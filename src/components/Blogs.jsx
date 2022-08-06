@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { setBlogs } from '../reducers/blogsReducer';
 
 import IndividualBlog from './IndividualBlog';
 import BlogForm from './BlogForm';
@@ -8,13 +11,17 @@ import Togglable from './Togglable';
 import blogsService from '../services/blogs';
 
 function Blogs({ user, setUser, setNotification }) {
-  const [blogs, setBlogs] = useState(null);
+  const dispatch = useDispatch();
+  function blogsSelector(state) {
+    return state.blogs;
+  }
+  const blogs = useSelector(blogsSelector);
 
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogsService.getAll().then((result) => setBlogs(result));
-  }, []);
+    blogsService.getAll().then((result) => dispatch(setBlogs(result)));
+  }, [dispatch]);
 
   function handleLogout() {
     window.localStorage.removeItem('bloglistAppLoggedinUser');
@@ -32,13 +39,8 @@ function Blogs({ user, setUser, setNotification }) {
           logout
         </button>
       </div>
-      <Togglable buttonLabel="new note" ref={blogFormRef}>
-        <BlogForm
-          blogs={blogs}
-          setBlogs={setBlogs}
-          setNotification={setNotification}
-          blogFormRef={blogFormRef}
-        />
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <BlogForm setNotification={setNotification} blogFormRef={blogFormRef} />
       </Togglable>
       <ul>
         {!sortedBlogs
@@ -48,7 +50,6 @@ function Blogs({ user, setUser, setNotification }) {
                 key={blog.id}
                 blog={blog}
                 blogs={blogs}
-                setBlogs={setBlogs}
                 setNotification={setNotification}
               />
             ))}

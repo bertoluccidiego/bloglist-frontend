@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { initializeBlogs } from '../reducers/blogsReducer';
+import { logoutUser } from '../reducers/usersReducer';
 
 import IndividualBlog from './IndividualBlog';
 import BlogForm from './BlogForm';
 import Togglable from './Togglable';
 
-function Blogs({ user, setUser, setNotification }) {
+function Blogs({ user, setNotification }) {
   const dispatch = useDispatch();
   function blogsSelector(state) {
     return state.blogs;
@@ -22,8 +23,7 @@ function Blogs({ user, setUser, setNotification }) {
   }, [dispatch]);
 
   function handleLogout() {
-    window.localStorage.removeItem('bloglistAppLoggedinUser');
-    setUser(null);
+    dispatch(logoutUser());
   }
 
   const sortedBlogs = blogs
@@ -63,7 +63,6 @@ Blogs.propTypes = {
     name: PropTypes.string.isRequired,
     token: PropTypes.string.isRequired,
   }).isRequired,
-  setUser: PropTypes.func.isRequired,
   setNotification: PropTypes.func.isRequired,
 };
 

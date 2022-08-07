@@ -1,10 +1,17 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import blogsService from '../services/blogs';
+import { deleteBlog, updateBlog } from '../reducers/blogsReducer';
 
-function IndividualBlog({ blog, blogs, setBlogs, setNotification }) {
+function IndividualBlog({ id, setNotification }) {
+  const dispatch = useDispatch();
+
   const [showFull, setShowFull] = useState(false);
+  function blogSelector(state) {
+    return state.blogs.find((b) => b.id === id);
+  }
+  const blog = useSelector(blogSelector);
 
   function toggleShow() {
     setShowFull(!showFull);
@@ -20,14 +27,10 @@ function IndividualBlog({ blog, blogs, setBlogs, setNotification }) {
     };
 
     try {
-      const updatedBlog = await blogsService.update(likedBlogObj, blog.id);
-      const updatedBlogs = blogs.map((b) =>
-        b.id === updatedBlog.id ? updatedBlog : b
-      );
-      setBlogs(updatedBlogs);
+      dispatch(updateBlog(likedBlogObj, blog.id));
       setNotification({
         error: false,
-        message: `'${updatedBlog.title}' liked`,
+        message: `'${likedBlogObj.title}' liked`,
       });
       setTimeout(() => {
         setNotification({
@@ -52,7 +55,7 @@ function IndividualBlog({ blog, blogs, setBlogs, setNotification }) {
   async function deleteHandler() {
     if (window.confirm(`Remove blog '${blog.title}' by ${blog.author}`)) {
       try {
-        await blogsService.remove(blog.id);
+        dispatch(deleteBlog(blog.id));
         setNotification({
           error: false,
           message: `'${blog.title}' removed`,
@@ -63,7 +66,6 @@ function IndividualBlog({ blog, blogs, setBlogs, setNotification }) {
             message: null,
           });
         }, 5000);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
       } catch (error) {
         setNotification({
           error: true,
@@ -122,31 +124,7 @@ function IndividualBlog({ blog, blogs, setBlogs, setNotification }) {
 }
 
 IndividualBlog.propTypes = {
-  blog: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    url: PropTypes.string,
-    likes: PropTypes.number.isRequired,
-    user: PropTypes.shape({
-      username: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    }).isRequired,
-  }),
-  blogs: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-      url: PropTypes.string,
-      likes: PropTypes.number.isRequired,
-      user: PropTypes.shape({
-        username: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        id: PropTypes.string.isRequired,
-      }).isRequired,
-    })
-  ).isRequired,
-  setBlogs: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
   setNotification: PropTypes.func.isRequired,
 };
 

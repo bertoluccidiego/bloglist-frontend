@@ -2,13 +2,11 @@ import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { setBlogs } from '../reducers/blogsReducer';
+import { initializeBlogs } from '../reducers/blogsReducer';
 
 import IndividualBlog from './IndividualBlog';
 import BlogForm from './BlogForm';
 import Togglable from './Togglable';
-
-import blogsService from '../services/blogs';
 
 function Blogs({ user, setUser, setNotification }) {
   const dispatch = useDispatch();
@@ -20,7 +18,7 @@ function Blogs({ user, setUser, setNotification }) {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogsService.getAll().then((result) => dispatch(setBlogs(result)));
+    dispatch(initializeBlogs());
   }, [dispatch]);
 
   function handleLogout() {
@@ -28,7 +26,9 @@ function Blogs({ user, setUser, setNotification }) {
     setUser(null);
   }
 
-  const sortedBlogs = blogs ? blogs.sort((a, b) => b.likes - a.likes) : null;
+  const sortedBlogs = blogs
+    ? blogs.slice().sort((a, b) => b.likes - a.likes)
+    : null;
 
   return (
     <div>
@@ -48,8 +48,7 @@ function Blogs({ user, setUser, setNotification }) {
           : sortedBlogs.map((blog) => (
               <IndividualBlog
                 key={blog.id}
-                blog={blog}
-                blogs={blogs}
+                id={blog.id}
                 setNotification={setNotification}
               />
             ))}

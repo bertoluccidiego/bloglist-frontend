@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 
 import { createBlog } from '../reducers/blogsReducer';
 
-import blogsService from '../services/blogs';
-
 function BlogForm({ setNotification, blogFormRef }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
@@ -16,15 +14,15 @@ function BlogForm({ setNotification, blogFormRef }) {
     event.preventDefault();
 
     try {
-      const savedBlog = await blogsService.create({
+      const newBlogObj = {
         title,
         author,
         url,
-      });
-      dispatch(createBlog(savedBlog));
+      };
+      dispatch(createBlog(newBlogObj));
       setNotification({
         error: false,
-        message: `Blog '${savedBlog.title}' added`,
+        message: `Blog '${newBlogObj.title}' added`,
       });
       setTimeout(() => {
         setNotification({

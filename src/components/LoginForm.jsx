@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { loginUser } from '../reducers/usersReducer';
+import { sendNotification } from '../reducers/notificationsReducer';
 
-function LoginForm({ setNotification }) {
+function LoginForm() {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,29 +14,11 @@ function LoginForm({ setNotification }) {
 
     try {
       dispatch(loginUser(username, password));
-      setNotification({
-        error: false,
-        message: `${username} logged-in`,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(false, `${username} logged-in`));
       setUsername('');
       setPassword('');
     } catch (error) {
-      setNotification({
-        error: true,
-        message: error.response.data.error,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(true, error.response.data.error));
     }
   }
 
@@ -67,9 +49,5 @@ function LoginForm({ setNotification }) {
     </div>
   );
 }
-
-LoginForm.propTypes = {
-  setNotification: PropTypes.func.isRequired,
-};
 
 export default LoginForm;

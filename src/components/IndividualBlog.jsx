@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { deleteBlog, updateBlog } from '../reducers/blogsReducer';
+import { sendNotification } from '../reducers/notificationsReducer';
 
-function IndividualBlog({ id, setNotification }) {
+function IndividualBlog({ id }) {
   const dispatch = useDispatch();
 
   const [showFull, setShowFull] = useState(false);
@@ -28,27 +29,9 @@ function IndividualBlog({ id, setNotification }) {
 
     try {
       dispatch(updateBlog(likedBlogObj, blog.id));
-      setNotification({
-        error: false,
-        message: `'${likedBlogObj.title}' liked`,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(false, `'${likedBlogObj.title}' liked`));
     } catch (error) {
-      setNotification({
-        error: true,
-        message: error.response.data.error,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(true, error.response.data.error));
     }
   }
 
@@ -56,27 +39,9 @@ function IndividualBlog({ id, setNotification }) {
     if (window.confirm(`Remove blog '${blog.title}' by ${blog.author}`)) {
       try {
         dispatch(deleteBlog(blog.id));
-        setNotification({
-          error: false,
-          message: `'${blog.title}' removed`,
-        });
-        setTimeout(() => {
-          setNotification({
-            error: false,
-            message: null,
-          });
-        }, 5000);
+        dispatch(sendNotification(false, `'${blog.title}' removed`));
       } catch (error) {
-        setNotification({
-          error: true,
-          message: error.response.data.error,
-        });
-        setTimeout(() => {
-          setNotification({
-            error: false,
-            message: null,
-          });
-        }, 5000);
+        dispatch(sendNotification(true, error.response.data.error));
       }
     }
   }
@@ -125,7 +90,6 @@ function IndividualBlog({ id, setNotification }) {
 
 IndividualBlog.propTypes = {
   id: PropTypes.string.isRequired,
-  setNotification: PropTypes.func.isRequired,
 };
 
 export default IndividualBlog;

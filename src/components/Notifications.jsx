@@ -1,6 +1,11 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-function Notifications({ error, message }) {
+function Notifications() {
+  function notificationsSelector(state) {
+    return state.notifications;
+  }
+  const { error, message } = useSelector(notificationsSelector);
+
   const notificationStyle = {
     color: error ? 'red' : 'green',
     backgroundColor: 'lightgrey',
@@ -16,14 +21,5 @@ function Notifications({ error, message }) {
 
   return null;
 }
-
-Notifications.propTypes = {
-  error: PropTypes.bool.isRequired,
-  message: PropTypes.string,
-};
-
-Notifications.defaultProps = {
-  message: null,
-};
 
 export default Notifications;

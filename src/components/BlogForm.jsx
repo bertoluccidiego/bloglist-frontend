@@ -3,8 +3,9 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { createBlog } from '../reducers/blogsReducer';
+import { sendNotification } from '../reducers/notificationsReducer';
 
-function BlogForm({ setNotification, blogFormRef }) {
+function BlogForm({ blogFormRef }) {
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -20,32 +21,13 @@ function BlogForm({ setNotification, blogFormRef }) {
         url,
       };
       dispatch(createBlog(newBlogObj));
-      setNotification({
-        error: false,
-        message: `Blog '${newBlogObj.title}' added`,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(false, `Blog '${newBlogObj.title}' added`));
       setTitle('');
       setAuthor('');
       setUrl('');
       blogFormRef.current.toggleVisibility();
     } catch (error) {
-      console.log(error);
-      setNotification({
-        error: true,
-        message: error.response.data.error,
-      });
-      setTimeout(() => {
-        setNotification({
-          error: false,
-          message: null,
-        });
-      }, 5000);
+      dispatch(sendNotification(true, error.response.data.error));
     }
   }
 
@@ -86,8 +68,6 @@ function BlogForm({ setNotification, blogFormRef }) {
 }
 
 BlogForm.propTypes = {
-  setNotification: PropTypes.func.isRequired,
-  // blogFormRef: PropTypes.func.isRequired,
   blogFormRef: PropTypes.shape({
     current: PropTypes.shape({ toggleVisibility: PropTypes.func }),
   }).isRequired,

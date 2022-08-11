@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import LoginForm from './components/LoginForm';
 import Blogs from './components/Blogs';
 import Notifications from './components/Notifications';
+import Users from './components/Users';
 
 import { initUser } from './reducers/usersReducer';
 
@@ -23,7 +24,12 @@ function App() {
   }, [dispatch]);
 
   function renderBlogs() {
-    return <Blogs user={user} setNotification={setNotification} />;
+    return (
+      <div>
+        <Users />
+        <Blogs user={user} setNotification={setNotification} />
+      </div>
+    );
   }
 
   function renderLoginForm() {

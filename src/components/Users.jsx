@@ -1,15 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import User from './User';
 
-import usersService from '../services/users';
+import { getUsersInfo } from '../reducers/usersInfoReducer';
 
 function Users() {
-  const [users, setUsers] = useState(null);
+  function usersInfoSelector(state) {
+    return state.usersInfo;
+  }
+
+  function blogsSelector(state) {
+    return state.blogs;
+  }
+
+  const dispatch = useDispatch();
+  const users = useSelector(usersInfoSelector);
+  const blogs = useSelector(blogsSelector);
 
   useEffect(() => {
-    usersService.getAll().then((result) => setUsers(result));
-  }, []);
+    dispatch(getUsersInfo());
+  }, [dispatch, blogs]);
 
   return (
     <div>

@@ -1,28 +1,24 @@
-import propTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function User({ user }) {
+function User() {
+  const { userId } = useParams();
+  function userSelector(state) {
+    return state.usersInfo.find((u) => u.id === userId);
+  }
+  const user = useSelector(userSelector);
+
   return (
-    <tr>
-      <td>{user.name}</td>
-      <td>{user.blogs.length}</td>
-    </tr>
+    <div>
+      <h2>{user.name}</h2>
+      <h3>Added blogs</h3>
+      <ul>
+        {user.blogs.map((b) => (
+          <li key={b.id}>{b.title}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
-
-User.propTypes = {
-  user: propTypes.shape({
-    username: propTypes.string.isRequired,
-    name: propTypes.string.isRequired,
-    id: propTypes.string.isRequired,
-    blogs: propTypes.arrayOf(
-      propTypes.shape({
-        title: propTypes.string.isRequired,
-        author: propTypes.string.isRequired,
-        url: propTypes.string.isRequired,
-        id: propTypes.string.isRequired,
-      })
-    ),
-  }).isRequired,
-};
 
 export default User;

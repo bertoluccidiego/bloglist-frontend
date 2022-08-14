@@ -29,7 +29,7 @@ export function sendNotification(error, message) {
     const state = getState();
     const prevTimeoutID = state.notifications.timeoutID;
     clearTimeout(prevTimeoutID);
-    const timeoutID = setTimeout(() => dispatch(resetNotification()), 10000);
+    const timeoutID = setTimeout(() => dispatch(resetNotification()), 3000);
     dispatch(setNotification({ error, message, timeoutID }));
   };
 }

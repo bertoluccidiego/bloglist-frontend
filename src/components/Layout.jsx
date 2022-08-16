@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 import { logoutUser } from '../reducers/usersReducer';
 
 import Notifications from './Notifications';
+
+import StyledLink from '../styles/StyledLink';
 
 export default function Layout() {
   function userSelector(state) {
@@ -21,13 +23,9 @@ export default function Layout() {
       <Notifications />
       <h1>Bloglist App</h1>
       <nav>
-        <Link style={{ padding: '1rem' }} to="/blogs">
-          Blogs
-        </Link>
-        <Link style={{ padding: '1rem' }} to="/users">
-          Users
-        </Link>
-        <Link style={{ padding: '1rem' }} to="/login">
+        <StyledLink to="/blogs">Blogs</StyledLink>
+        <StyledLink to="/users">Users</StyledLink>
+        <StyledLink to="/login">
           {user ? (
             <>
               {user.username} logged-in{' '}
@@ -38,7 +36,7 @@ export default function Layout() {
           ) : (
             'Log-in'
           )}
-        </Link>
+        </StyledLink>
       </nav>
       <Outlet />
     </div>

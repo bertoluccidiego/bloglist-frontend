@@ -6,10 +6,14 @@ import store from './store';
 
 import App from './App';
 
+import RootContainer from './styles/RootContainer';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+      <RootContainer>
+        <App />
+      </RootContainer>
     </Provider>
   </BrowserRouter>
 );
